@@ -63,7 +63,11 @@ android {
   defaultConfig {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
+    buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+  }
 
+  buildFeatures {
+    buildConfig true
   }
 
   buildTypes {
@@ -80,12 +84,28 @@ android {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
   }
+
+  sourceSets.main {
+    java {
+      if (isNewArchitectureEnabled()) {
+        srcDirs += [
+          'src/newArch/java',
+          "generated/java",
+          "generated/jni",
+        ]
+      } else {
+        srcDirs += 'src/oldArch/java'
+      }
+    }
+  }
 }
 
 repositories {
   mavenCentral()
   google()
 }
+
+apply from: "setup-module.gradle"
 
 def kotlin_version = getExtOrDefault("kotlinVersion")
 
@@ -95,5 +115,15 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+  // Add the shadowsocks core library dependency
+  implementation "com.github.shadowsocks:core:5.3.4"
 }
 
+if (isNewArchitectureEnabled()) {
+  react {
+    jsRootDir = file("../src/")
+    libraryName = "ShadowsocksAndroid"
+    codegenJavaPackageName = "com.shadowsocksandroid"
+  }
+}

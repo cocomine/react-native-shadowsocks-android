@@ -1,0 +1,24 @@
+// NOTE: apply this file in app/build.gradle
+
+android {
+    compileOptions {
+        // Set the source compatibility to Java 11
+        sourceCompatibility JavaVersion.VERSION_11
+        // Set the target compatibility to Java 11
+        targetCompatibility JavaVersion.VERSION_11
+        // Enable core library desugaring
+        coreLibraryDesugaringEnabled true
+    }
+
+    // Disable the lint check for "RemoveWorkManagerInitializer"
+    lint.disable += "RemoveWorkManagerInitializer"
+
+    // Use legacy packaging for JNI libraries
+    packagingOptions.jniLibs.useLegacyPackaging = true
+}
+
+dependencies {
+    // Add the core library desugaring dependency
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.2'
+}
+

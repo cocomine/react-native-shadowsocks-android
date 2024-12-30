@@ -1,4 +1,4 @@
-import { NativeModules, Platform } from 'react-native';
+/*import { NativeModules, Platform } from 'react-native';
 
 const LINKING_ERROR =
   `The package 'react-native-shadowsocks-android' doesn't seem to be linked. Make sure: \n\n` +
@@ -17,6 +17,28 @@ const ShadowsocksAndroid = NativeModules.ShadowsocksAndroid
       }
     );
 
-export function multiply(a: number, b: number): Promise<number> {
-  return ShadowsocksAndroid.multiply(a, b);
+export function addProfile(uri: string): number[] {
+  return ShadowsocksAndroid.addProfile(uri);
 }
+
+export function deleteProfile(profileId: number): void {
+  return ShadowsocksAndroid.deleteProfile(profileId);
+}
+
+export function clearProfiles(): void {
+  return ShadowsocksAndroid.clearProfiles();
+}
+
+export function connect(): void {
+  return ShadowsocksAndroid.connect();
+}
+
+export function disconnect(): void {
+  return ShadowsocksAndroid.disconnect();
+}
+
+export function switchProfile(profileId: number): number {
+  return ShadowsocksAndroid.switchProfile(profileId);
+}*/
+
+export { Shadowsocks } from './Shadowsocks';
