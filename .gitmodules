@@ -1,0 +1,3 @@
+[submodule "shadowsocks-android"]
+	path = shadowsocks-android
+	url = https://github.com/cocomine/shadowsocks-android.git
