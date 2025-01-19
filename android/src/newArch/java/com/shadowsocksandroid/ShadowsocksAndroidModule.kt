@@ -5,8 +5,10 @@ import android.app.Application
 import android.content.Intent
 import com.facebook.react.ReactActivity
 import com.facebook.react.bridge.BaseActivityEventListener
+import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.UiThreadUtil
 import com.facebook.react.bridge.WritableArray
 import com.facebook.react.bridge.WritableNativeArray
@@ -78,7 +80,7 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
    * @return A WritableArray containing the IDs of the added profiles.
    */
   @ReactMethod
-  override fun addProfile(uri: String?): WritableArray {
+  override fun importProfileUri(uri: String?): WritableArray {
     val profilesArray = WritableNativeArray();
 
     val profiles = Profile.findAllUrls(uri)
@@ -89,6 +91,14 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
     }
 
     return profilesArray
+  }
+
+  override fun addProfile(profile: ReadableMap?): Double {
+    TODO("Not yet implemented")
+  }
+
+  override fun listAllProfile(): WritableArray {
+    TODO("Not yet implemented")
   }
 
   /**
@@ -114,18 +124,20 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
    * Connects to the service.
    */
   @ReactMethod
-  override fun connect() {
+  override fun connect(promise: Promise?) {
     val activity = currentActivity
 
     // Check if the current activity is a ReactActivity
     if (activity == null || activity !is ReactActivity) {
       Timber.tag(NAME).e("Current activity is null or not a ReactActivity")
+      promise?.reject("E_ACTIVITY_ERROR", "Current activity is null or not a ReactActivity")
       return
     }
 
     UiThreadUtil.runOnUiThread {
       val intent = Intent(activity, VpnRequestActivity::class.java)
       activity.startActivityForResult(intent, Activity.RESULT_OK)
+      promise?.resolve(true)
     };
 
     Timber.tag(NAME).d("Connect to service")
@@ -135,9 +147,10 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
    * Disconnects from the service.
    */
   @ReactMethod
-  override fun disconnect() {
+  override fun disconnect(promise: Promise?) {
     Core.stopService()
     Timber.tag(NAME).d("Disconnect from service")
+    promise?.resolve(true)
   }
 
   /**
@@ -156,12 +169,10 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
   }
 
   override fun stateChanged(state: BaseService.State, profileName: String?, msg: String?) {
-    println(state)
-    println(profileName)
-    println(msg)
+    TODO("Not yet implemented")
   }
 
   override fun onServiceConnected(service: IShadowsocksService) {
-    println(service)
+    TODO("Not yet implemented")
   }
 }
