@@ -1,7 +1,6 @@
 package com.shadowsocksandroid
 
 import android.app.Activity
-import android.app.Application
 import android.content.Intent
 import com.facebook.react.ReactActivity
 import com.facebook.react.bridge.BaseActivityEventListener
@@ -11,6 +10,7 @@ import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.UiThreadUtil
 import com.facebook.react.bridge.WritableArray
+import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeArray
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.modules.core.DeviceEventManagerModule
@@ -21,8 +21,8 @@ import com.github.shadowsocks.aidl.ShadowsocksConnection
 import com.github.shadowsocks.bg.BaseService
 import com.github.shadowsocks.database.Profile
 import com.github.shadowsocks.database.ProfileManager
+import com.github.shadowsocks.plugin.PluginOptions
 import timber.log.Timber
-import kotlin.reflect.KClass
 
 
 @ReactModule(name = ShadowsocksAndroidModule.NAME)
@@ -91,10 +91,41 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
     }
 
     return profilesArray
+    TODO("Not yet implemented")
   }
 
-  override fun addProfile(profile: ReadableMap?): Double {
-    TODO("Not yet implemented")
+  /**
+   * Adds a profile.
+   * @param ShadowsocksProfile The profile to add.
+   * @return The new ID of the added profile.
+   */
+  override fun addProfile(ShadowsocksProfile: ReadableMap?): Double {
+    val profile = Profile();
+    with(profile){
+      name = ShadowsocksProfile?.getString("name") ?: ""
+      host = ShadowsocksProfile?.getString("host") ?: "example.shadowsocks.org"
+      remotePort = ShadowsocksProfile?.getInt("remotePort") ?: 8388
+      password = ShadowsocksProfile?.getString("password") ?: "password"
+      method = ShadowsocksProfile?.getString("method") ?: "aes-256-cfb"
+
+      route = ShadowsocksProfile?.getString("route") ?: "all"
+      remoteDns = ShadowsocksProfile?.getString("remoteDns") ?: "dns.google"
+      proxyApps = ShadowsocksProfile?.getBoolean("proxyApps") ?: false
+      bypass = ShadowsocksProfile?.getBoolean("bypass") ?: false
+      udpdns = ShadowsocksProfile?.getBoolean("udpdns") ?: false
+      ipv6 = ShadowsocksProfile?.getBoolean("ipv6") ?: false
+
+      metered = ShadowsocksProfile?.getBoolean("metered") ?: false
+      individual = ShadowsocksProfile?.getString("individual") ?: ""
+
+      val pluginId = ShadowsocksProfile?.getString("plugin")
+      if (!pluginId.isNullOrEmpty()) {
+        plugin = PluginOptions(pluginId, ShadowsocksProfile.getString("plugin_opts")).toString(false)
+      }
+    }
+
+    Timber.tag(NAME).i("Added profile $profile")
+    return ProfileManager.createProfile(profile).id.toDouble();
   }
 
   override fun listAllProfile(): WritableArray {
@@ -141,16 +172,16 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
     };
 
     Timber.tag(NAME).d("Connect to service")
+    TODO("Not yet implemented")
   }
 
   /**
    * Disconnects from the service.
    */
   @ReactMethod
-  override fun disconnect(promise: Promise?) {
+  override fun disconnect() {
     Core.stopService()
     Timber.tag(NAME).d("Disconnect from service")
-    promise?.resolve(true)
   }
 
   /**
@@ -159,9 +190,10 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
    * @return The ID of the switched profile.
    */
   @ReactMethod
-  override fun switchProfile(profileId: Double): Double {
+  override fun switchProfile(profileId: Double): WritableMap? {
     Timber.tag(NAME).d("Switching to profile $profileId")
-    return Core.switchProfile(profileId.toLong()).id.toDouble()
+    val profile = Core.switchProfile(profileId.toLong())
+    TODO("Not yet implemented")
   }
 
   companion object {

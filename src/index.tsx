@@ -40,5 +40,7 @@ export function disconnect(): void {
 export function switchProfile(profileId: number): number {
   return ShadowsocksAndroid.switchProfile(profileId);
 }*/
+import { Shadowsocks } from './Shadowsocks';
+import { Profile } from './Profile';
 
-export { Shadowsocks } from './Shadowsocks';
+export { Shadowsocks, Profile };

@@ -1,16 +1,48 @@
 import type { TurboModule } from 'react-native';
 import { TurboModuleRegistry } from 'react-native';
 
-type ShadowsocksProfile = {
-  url: string;
+/**
+ * Represents a Shadowsocks profile type.
+ */
+type ShadowsocksProfileType = {
+  readonly id: number;
+  name: string | null;
+  host: string;
+  remotePort: number;
+  password: string;
+  method: string;
+
+  route: RouteType;
+  remoteDns: string;
+  proxyApps: boolean;
+  bypass: boolean;
+  udpdns: boolean;
+  ipv6: boolean;
+
+  metered: boolean;
+  individual: string | null;
+  plugin: string | null;
+  plugin_opts: string | null;
 };
 
+/**
+ * Represents the routing strategy for the profile.
+ * @typedef {('all' | 'bypass-lan' | 'bypass-china' | 'bypass-lan-china' | 'gfwlist' | 'china-list')} RouteType
+ */
+type RouteType =
+  | 'all'
+  | 'bypass-lan'
+  | 'bypass-china'
+  | 'bypass-lan-china'
+  | 'gfwlist'
+  | 'china-list';
+
 export interface Spec extends TurboModule {
-  importProfileUri(uri: string): ShadowsocksProfile[];
+  importProfileUri(uri: string): ShadowsocksProfileType[];
 
-  addProfile(profile: ShadowsocksProfile): number;
+  addProfile(ShadowsocksProfile: ShadowsocksProfileType): number;
 
-  listAllProfile(): ShadowsocksProfile[];
+  listAllProfile(): ShadowsocksProfileType[];
 
   deleteProfile(profileId: number): void;
 
@@ -18,9 +50,9 @@ export interface Spec extends TurboModule {
 
   connect(): Promise<boolean>;
 
-  disconnect(): Promise<boolean>;
+  disconnect(): void;
 
-  switchProfile(profileId: number): number;
+  switchProfile(profileId: number): ShadowsocksProfileType;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('ShadowsocksAndroid');

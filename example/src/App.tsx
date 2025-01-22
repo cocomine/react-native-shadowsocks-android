@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { Button, SafeAreaView, StatusBar, useColorScheme } from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { Shadowsocks } from 'react-native-shadowsocks-android';
+import { Profile, Shadowsocks } from 'react-native-shadowsocks-android';
 
 export default function App() {
   const isDarkMode = useColorScheme() === 'dark';
-  const [, setProfilesIDs] = useState<number[]>([]);
+  const [, setProfilesIDs] = useState<number>(0);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -23,10 +23,16 @@ export default function App() {
       <Button
         title={'Add Profile'}
         onPress={() => {
-          const a = Shadowsocks.addProfile(
-            'ss://eGNoYWNoYTIwLWlldGYtcG9seTEzMDU6QXhlN0oyYWtHIUBvQmdU@us.vpn.cocomine.cc:6373/#US_vpn'
+          const profile = new Profile(
+            'hk.vpn.cocomine.cc',
+            6373,
+            'i4tbxhk6uEk-LT$',
+            'xchacha20-ietf-poly1305'
           );
-          setProfilesIDs(a);
+          Shadowsocks.addProfile(profile);
+
+          console.log(profile);
+          setProfilesIDs(profile.id);
         }}
       />
       <Button
