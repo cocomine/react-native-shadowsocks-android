@@ -79,7 +79,6 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
    * @param uri The URI to find profiles.
    * @return A WritableArray containing the IDs of the added profiles.
    */
-  @ReactMethod
   override fun importProfileUri(uri: String?): WritableArray {
     val profilesArray = WritableNativeArray();
 
@@ -136,7 +135,6 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
    * Deletes a profile by its ID.
    * @param profileId The ID of the profile to delete.
    */
-  @ReactMethod
   override fun deleteProfile(profileId: Double) {
     ProfileManager.delProfile(profileId.toLong())
     Timber.tag(NAME).d("Delete profile $profileId")
@@ -145,7 +143,6 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
   /**
    * Clears all profiles.
    */
-  @ReactMethod
   override fun clearProfiles() {
     ProfileManager.clear()
     Timber.tag(NAME).d("Clear all profiles")
@@ -154,7 +151,6 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
   /**
    * Connects to the service.
    */
-  @ReactMethod
   override fun connect(promise: Promise?) {
     val activity = currentActivity
 
@@ -178,7 +174,6 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
   /**
    * Disconnects from the service.
    */
-  @ReactMethod
   override fun disconnect() {
     Core.stopService()
     Timber.tag(NAME).d("Disconnect from service")
@@ -189,7 +184,6 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
    * @param profileId The ID of the profile to switch to.
    * @return The ID of the switched profile.
    */
-  @ReactMethod
   override fun switchProfile(profileId: Double): WritableMap? {
     Timber.tag(NAME).d("Switching to profile $profileId")
     val profile = Core.switchProfile(profileId.toLong())

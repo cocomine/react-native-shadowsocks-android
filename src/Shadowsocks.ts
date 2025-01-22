@@ -93,6 +93,7 @@ function addProfile(profile: Profile): Profile {
     plugin_opts: profile.plugin_opts,
   };
 
+  console.log(ShadowsocksAndroid);
   profile.id = ShadowsocksAndroid.addProfile(SSProfile);
   return profile;
 }
