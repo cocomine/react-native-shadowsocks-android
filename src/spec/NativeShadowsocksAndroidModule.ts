@@ -20,7 +20,7 @@ type ShadowsocksProfileType = {
   ipv6: boolean;
 
   metered: boolean;
-  individual: string | null;
+  individual: string[];
   plugin: string | null;
   plugin_opts: string | null;
 };

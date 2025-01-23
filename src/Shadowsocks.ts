@@ -1,5 +1,5 @@
 import { NativeModules, Platform } from 'react-native';
-import type { Profile } from './Profile';
+import { Profile } from './Profile';
 
 // @ts-ignore
 const isTurboModuleEnabled = global.__turboModuleProxy != null;
@@ -48,7 +48,7 @@ type ShadowsocksProfileType = {
   ipv6: boolean;
 
   metered: boolean;
-  individual: string | null;
+  individual: string[];
   plugin: string | null;
   plugin_opts: string | null;
 };
@@ -68,12 +68,12 @@ type RouteType =
 /**
  * Adds a Shadowsocks profile.
  *
- * NOTE: After adding the profile, the profile id will be updated.
+ * NOTE: After adding the profile, the id attribute in the given profile object will be modified.
  *
  * @param {Profile} profile - The profile to be added.
- * @returns {Profile} - The added profile.
+ * @returns {Profile} - The added profile id.
  */
-function addProfile(profile: Profile): Profile {
+function addProfile(profile: Profile): number {
   const SSProfile: ShadowsocksProfileType = {
     id: profile.id,
     name: profile.name,
@@ -88,14 +88,42 @@ function addProfile(profile: Profile): Profile {
     udpdns: profile.udpdns,
     ipv6: profile.ipv6,
     metered: profile.metered,
-    individual: profile.individual.join('\n'),
+    individual: profile.individual,
     plugin: profile.plugin,
     plugin_opts: profile.plugin_opts,
   };
 
   console.log(ShadowsocksAndroid);
   profile.id = ShadowsocksAndroid.addProfile(SSProfile);
-  return profile;
+  return profile.id;
+}
+
+function importProfileUri(uri: string): Profile[] {
+  const profiles: ShadowsocksProfileType[] =
+    ShadowsocksAndroid.importProfileUri(uri);
+
+  return profiles.map((profile) => {
+    const profileClass = new Profile(
+      profile.host,
+      profile.remotePort,
+      profile.password,
+      profile.method,
+      profile.route
+    );
+    profileClass.id = profile.id;
+    profileClass.name = profile.name;
+    profileClass.remoteDns = profile.remoteDns;
+    profileClass.proxyApps = profile.proxyApps;
+    profileClass.bypass = profile.bypass;
+    profileClass.udpdns = profile.udpdns;
+    profileClass.ipv6 = profile.ipv6;
+    profileClass.metered = profile.metered;
+    profileClass.individual = profile.individual;
+    profileClass.plugin = profile.plugin;
+    profileClass.plugin_opts = profile.plugin_opts;
+
+    return profileClass;
+  });
 }
 
 function deleteProfile(profileId: number): void {
@@ -125,6 +153,7 @@ export const Shadowsocks = {
   connect,
   disconnect,
   switchProfile,
+  importProfileUri,
 };
 
 export type { RouteType, ShadowsocksProfileType };
