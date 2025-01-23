@@ -44,7 +44,7 @@ export interface Spec extends TurboModule {
 
   listAllProfile(): ShadowsocksProfileType[];
 
-  deleteProfile(profileId: number): void;
+  deleteProfile(profileId: number): boolean;
 
   clearProfiles(): void;
 

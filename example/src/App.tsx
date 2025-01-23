@@ -6,7 +6,7 @@ import { Profile, Shadowsocks } from 'react-native-shadowsocks-android';
 
 export default function App() {
   const isDarkMode = useColorScheme() === 'dark';
-  const [, setProfilesIDs] = useState<number>(0);
+  const [profileID, setProfileID] = useState<number>(0);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -29,15 +29,33 @@ export default function App() {
             'i4tbxhk6uEk-LT$',
             'xchacha20-ietf-poly1305'
           );
-          Shadowsocks.addProfile(profile);
+          profile.proxyApps = true;
+          profile.individual = [
+            'com.eg.android.AlipayGphone',
+            'com.wudaokou.hippo',
+          ];
+          profile.plugin = 'v2ray';
+          profile.plugin_opts = 'host=www.example.com';
 
+          const id = Shadowsocks.addProfile(profile);
           console.log(profile);
-          setProfilesIDs(profile.id);
+          setProfileID(id);
+        }}
+      />
+      <Button
+        title={'import Profile Uri'}
+        onPress={() => {
+          const profiles = Shadowsocks.importProfileUri(
+            'ss://eGNoYWNoYTIwLWlldGYtcG9seTEzMDU6QXhlN0oyYWtHIUBvQmdU@us.vpn.cocomine.cc:6373/#US_vpn \n' +
+              'ss://eGNoYWNoYTIwLWlldGYtcG9seTEzMDU6ZXRFWVpWTnJHeWprLV81@tw.vpn.cocomine.cc:6373/#TW_vpn'
+          );
+
+          console.log(profiles);
         }}
       />
       <Button
         title={'Delete Profile'}
-        onPress={() => Shadowsocks.deleteProfile(1)}
+        onPress={() => console.log(Shadowsocks.deleteProfile(profileID))}
       />
       <Button
         title={'Clear Profiles'}
@@ -45,7 +63,7 @@ export default function App() {
       />
       <Button
         title={'Switch Profile'}
-        onPress={() => Shadowsocks.switchProfile(1)}
+        onPress={() => Shadowsocks.switchProfile(profileID)}
       />
     </SafeAreaView>
   );

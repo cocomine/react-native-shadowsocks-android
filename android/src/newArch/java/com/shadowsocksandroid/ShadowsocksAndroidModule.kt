@@ -102,7 +102,7 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
       profileMap.putBoolean("ipv6", profile.ipv6)
       profileMap.putBoolean("metered", profile.metered)
       WritableNativeArray().also {
-        if(profile.individual.isNotEmpty()){
+        if (profile.individual.isNotEmpty()) {
           profile.individual.split("\n").forEach { it2 -> it.pushString(it2) }
         }
         profileMap.putArray("individual", it)
@@ -111,7 +111,7 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
         if (it.id.isNotEmpty()) {
           profileMap.putString("plugin", it.id)
           profileMap.putString("plugin_opts", it.toString())
-        }else{
+        } else {
           profileMap.putString("plugin", null)
           profileMap.putString("plugin_opts", null)
         }
@@ -132,7 +132,7 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
    */
   override fun addProfile(shadowsocksProfile: ReadableMap?): Double {
     val profile = Profile();
-    with(profile){
+    with(profile) {
       name = shadowsocksProfile?.getString("name") ?: ""
       host = shadowsocksProfile?.getString("host") ?: "example.shadowsocks.org"
       remotePort = shadowsocksProfile?.getInt("remotePort") ?: 8388
@@ -156,10 +156,10 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
       }
     }
 
-    Timber.tag(NAME).i("Added profile $profile")
     if (shadowsocksProfile != null) {
       Timber.tag(NAME).d("$shadowsocksProfile")
     }
+    Timber.tag(NAME).i("Added profile $profile")
     return ProfileManager.createProfile(profile).id.toDouble();
   }
 
@@ -169,19 +169,30 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
 
   /**
    * Deletes a profile by its ID.
+   *
    * @param profileId The ID of the profile to delete.
+   * @return `true` if the profile was successfully deleted, `false` otherwise.
    */
-  override fun deleteProfile(profileId: Double) {
-    ProfileManager.delProfile(profileId.toLong())
-    Timber.tag(NAME).d("Delete profile $profileId")
+  override fun deleteProfile(profileId: Double): Boolean {
+    try {
+      // Attempt to delete the profile using the ProfileManager
+      ProfileManager.delProfile(profileId.toLong())
+      Timber.tag(NAME).i("Deleted profile $profileId")
+      return true
+    } catch (e: IllegalStateException) {
+      // Log the exception if deletion fails
+      Timber.tag(NAME).e(e)
+      Timber.tag(NAME).i("Deleted failed profile $profileId")
+    }
+    return false
   }
 
   /**
-   * Clears all profiles.
+   * Clears all profiles from the ProfileManager.
    */
   override fun clearProfiles() {
     ProfileManager.clear()
-    Timber.tag(NAME).d("Clear all profiles")
+    Timber.tag(NAME).i("Clear all profiles")
   }
 
   /**

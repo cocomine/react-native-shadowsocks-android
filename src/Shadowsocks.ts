@@ -98,6 +98,12 @@ function addProfile(profile: Profile): number {
   return profile.id;
 }
 
+/**
+ * Imports profiles from a given URI.
+ *
+ * @param {string} uri - The URI to import profiles from.
+ * @returns {Profile[]} - An array of imported profiles.
+ */
 function importProfileUri(uri: string): Profile[] {
   const profiles: ShadowsocksProfileType[] =
     ShadowsocksAndroid.importProfileUri(uri);
@@ -126,10 +132,21 @@ function importProfileUri(uri: string): Profile[] {
   });
 }
 
-function deleteProfile(profileId: number): void {
+/**
+ * Deletes a Shadowsocks profile by its ID.
+ *
+ * @param {number} profileId - The ID of the profile to be deleted.
+ * @returns {boolean} - Returns true if the profile was successfully deleted, false otherwise.
+ */
+function deleteProfile(profileId: number): boolean {
   return ShadowsocksAndroid.deleteProfile(profileId);
 }
 
+/**
+ * Clears all Shadowsocks profiles.
+ *
+ * @returns {void}
+ */
 function clearProfiles(): void {
   return ShadowsocksAndroid.clearProfiles();
 }
