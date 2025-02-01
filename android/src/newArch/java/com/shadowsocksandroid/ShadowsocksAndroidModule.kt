@@ -199,6 +199,7 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
    * Connects to the service.
    */
   override fun connect(promise: Promise?) {
+    TODO("Not yet implemented")
     val activity = currentActivity
 
     // Check if the current activity is a ReactActivity
@@ -213,15 +214,14 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
       activity.startActivityForResult(intent, Activity.RESULT_OK)
       promise?.resolve(true)
     };
-
     Timber.tag(NAME).d("Connect to service")
-    TODO("Not yet implemented")
   }
 
   /**
    * Disconnects from the service.
    */
   override fun disconnect() {
+    TODO("Not yet implemented")
     Core.stopService()
     Timber.tag(NAME).d("Disconnect from service")
   }
@@ -232,9 +232,9 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
    * @return The ID of the switched profile.
    */
   override fun switchProfile(profileId: Double): WritableMap? {
+    TODO("Not yet implemented")
     Timber.tag(NAME).d("Switching to profile $profileId")
     val profile = Core.switchProfile(profileId.toLong())
-    TODO("Not yet implemented")
   }
 
   companion object {

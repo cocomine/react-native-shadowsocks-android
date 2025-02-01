@@ -8,7 +8,7 @@ const LINKING_ERROR =
   `The package 'react-native-shadowsocks-android' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
   '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo Go\n';
+  '- You are using Expo Go\n';
 
 let ShadowsocksAndroid: any;
 
@@ -93,7 +93,6 @@ function addProfile(profile: Profile): number {
     plugin_opts: profile.plugin_opts,
   };
 
-  console.log(ShadowsocksAndroid);
   profile.id = ShadowsocksAndroid.addProfile(SSProfile);
   return profile.id;
 }

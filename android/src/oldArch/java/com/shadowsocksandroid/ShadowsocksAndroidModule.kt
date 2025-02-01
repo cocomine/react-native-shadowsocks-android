@@ -13,6 +13,7 @@ import com.facebook.react.bridge.UiThreadUtil
 import com.facebook.react.bridge.WritableArray
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeArray
+import com.facebook.react.bridge.WritableNativeMap
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.github.shadowsocks.Core
 import com.github.shadowsocks.VpnRequestActivity
@@ -21,6 +22,7 @@ import com.github.shadowsocks.aidl.ShadowsocksConnection
 import com.github.shadowsocks.bg.BaseService
 import com.github.shadowsocks.database.Profile
 import com.github.shadowsocks.database.ProfileManager
+import com.github.shadowsocks.plugin.PluginConfiguration
 import com.github.shadowsocks.plugin.PluginOptions
 import timber.log.Timber
 
@@ -84,12 +86,43 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
     val profiles = Profile.findAllUrls(uri)
     for (profile in profiles) {
       ProfileManager.createProfile(profile)
-      profilesArray.pushDouble(profile.id.toDouble())
+
+      val profileMap = WritableNativeMap()
+      profileMap.putDouble("id", profile.id.toDouble())
+      profileMap.putString("name", profile.name)
+      profileMap.putString("host", profile.host)
+      profileMap.putInt("remotePort", profile.remotePort)
+      profileMap.putString("password", profile.password)
+      profileMap.putString("method", profile.method)
+      profileMap.putString("route", profile.route)
+      profileMap.putString("remoteDns", profile.remoteDns)
+      profileMap.putBoolean("proxyApps", profile.proxyApps)
+      profileMap.putBoolean("bypass", profile.bypass)
+      profileMap.putBoolean("udpdns", profile.udpdns)
+      profileMap.putBoolean("ipv6", profile.ipv6)
+      profileMap.putBoolean("metered", profile.metered)
+      WritableNativeArray().also {
+        if (profile.individual.isNotEmpty()) {
+          profile.individual.split("\n").forEach { it2 -> it.pushString(it2) }
+        }
+        profileMap.putArray("individual", it)
+      }
+      PluginConfiguration(profile.plugin ?: "").getOptions().also {
+        if (it.id.isNotEmpty()) {
+          profileMap.putString("plugin", it.id)
+          profileMap.putString("plugin_opts", it.toString())
+        } else {
+          profileMap.putString("plugin", null)
+          profileMap.putString("plugin_opts", null)
+        }
+      }
+
+      profilesArray.pushMap(profileMap)
       Timber.tag(NAME).d("Added profile $profile")
     }
 
+    Timber.tag(NAME).d("$profilesArray")
     return profilesArray
-    TODO("Not yet implemented")
   }
 
   /**
@@ -98,31 +131,35 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
    * @return The new ID of the added profile.
    */
   @ReactMethod(isBlockingSynchronousMethod = true)
-  fun addProfile(ShadowsocksProfile: ReadableMap?): Double {
+  fun addProfile(shadowsocksProfile: ReadableMap?): Double {
     val profile = Profile();
-    with(profile){
-      name = ShadowsocksProfile?.getString("name") ?: ""
-      host = ShadowsocksProfile?.getString("host") ?: "example.shadowsocks.org"
-      remotePort = ShadowsocksProfile?.getInt("remotePort") ?: 8388
-      password = ShadowsocksProfile?.getString("password") ?: "password"
-      method = ShadowsocksProfile?.getString("method") ?: "aes-256-cfb"
+    with(profile) {
+      name = shadowsocksProfile?.getString("name") ?: ""
+      host = shadowsocksProfile?.getString("host") ?: "example.shadowsocks.org"
+      remotePort = shadowsocksProfile?.getInt("remotePort") ?: 8388
+      password = shadowsocksProfile?.getString("password") ?: "password"
+      method = shadowsocksProfile?.getString("method") ?: "aes-256-cfb"
 
-      route = ShadowsocksProfile?.getString("route") ?: "all"
-      remoteDns = ShadowsocksProfile?.getString("remoteDns") ?: "dns.google"
-      proxyApps = ShadowsocksProfile?.getBoolean("proxyApps") ?: false
-      bypass = ShadowsocksProfile?.getBoolean("bypass") ?: false
-      udpdns = ShadowsocksProfile?.getBoolean("udpdns") ?: false
-      ipv6 = ShadowsocksProfile?.getBoolean("ipv6") ?: false
+      route = shadowsocksProfile?.getString("route") ?: "all"
+      remoteDns = shadowsocksProfile?.getString("remoteDns") ?: "dns.google"
+      proxyApps = shadowsocksProfile?.getBoolean("proxyApps") ?: false
+      bypass = shadowsocksProfile?.getBoolean("bypass") ?: false
+      udpdns = shadowsocksProfile?.getBoolean("udpdns") ?: false
+      ipv6 = shadowsocksProfile?.getBoolean("ipv6") ?: false
 
-      metered = ShadowsocksProfile?.getBoolean("metered") ?: false
-      individual = ShadowsocksProfile?.getString("individual") ?: ""
+      metered = shadowsocksProfile?.getBoolean("metered") ?: false
+      val proxyAppsList = shadowsocksProfile?.getArray("individual")?.toArrayList()?.map { it.toString() } ?: emptyList()
+      individual = proxyAppsList.joinToString("\n");
 
-      val pluginId = ShadowsocksProfile?.getString("plugin")
+      val pluginId = shadowsocksProfile?.getString("plugin")
       if (!pluginId.isNullOrEmpty()) {
-        plugin = PluginOptions(pluginId, ShadowsocksProfile.getString("plugin_opts")).toString(false)
+        plugin = PluginOptions(pluginId, shadowsocksProfile.getString("plugin_opts")).toString(false)
       }
     }
 
+    if (shadowsocksProfile != null) {
+      Timber.tag(NAME).d("$shadowsocksProfile")
+    }
     Timber.tag(NAME).i("Added profile $profile")
     return ProfileManager.createProfile(profile).id.toDouble();
   }
@@ -134,21 +171,32 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
 
   /**
    * Deletes a profile by its ID.
+   *
    * @param profileId The ID of the profile to delete.
+   * @return `true` if the profile was successfully deleted, `false` otherwise.
    */
-  @ReactMethod
-  fun deleteProfile(profileId: Double) {
-    ProfileManager.delProfile(profileId.toLong())
-    Timber.tag(NAME).d("Delete profile $profileId")
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  fun deleteProfile(profileId: Double): Boolean {
+    try {
+      // Attempt to delete the profile using the ProfileManager
+      ProfileManager.delProfile(profileId.toLong())
+      Timber.tag(NAME).i("Deleted profile $profileId")
+      return true
+    } catch (e: IllegalStateException) {
+      // Log the exception if deletion fails
+      Timber.tag(NAME).e(e)
+      Timber.tag(NAME).i("Deleted failed profile $profileId")
+    }
+    return false
   }
 
   /**
-   * Clears all profiles.
+   * Clears all profiles from the ProfileManager.
    */
   @ReactMethod
   fun clearProfiles() {
     ProfileManager.clear()
-    Timber.tag(NAME).d("Clear all profiles")
+    Timber.tag(NAME).i("Clear all profiles")
   }
 
   /**
@@ -156,6 +204,7 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
    */
   @ReactMethod
   fun connect(promise: Promise?) {
+    TODO("Not yet implemented")
     val activity = currentActivity
 
     // Check if the current activity is a ReactActivity
@@ -170,9 +219,7 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
       activity.startActivityForResult(intent, Activity.RESULT_OK)
       promise?.resolve(true)
     };
-
     Timber.tag(NAME).d("Connect to service")
-    TODO("Not yet implemented")
   }
 
   /**
@@ -180,6 +227,7 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
    */
   @ReactMethod
   fun disconnect() {
+    TODO("Not yet implemented")
     Core.stopService()
     Timber.tag(NAME).d("Disconnect from service")
   }
@@ -189,11 +237,11 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
    * @param profileId The ID of the profile to switch to.
    * @return The ID of the switched profile.
    */
-  @ReactMethod(isBlockingSynchronousMethod = true)
+  @ReactMethod
   fun switchProfile(profileId: Double): WritableMap? {
+    TODO("Not yet implemented")
     Timber.tag(NAME).d("Switching to profile $profileId")
     val profile = Core.switchProfile(profileId.toLong())
-    TODO("Not yet implemented")
   }
 
   companion object {
