@@ -21,6 +21,10 @@ export default function App() {
       <Button title={'Connect'} onPress={() => Shadowsocks.connect()} />
       <Button title={'Disconnect'} onPress={() => Shadowsocks.disconnect()} />
       <Button
+        title={'Switch Profile'}
+        onPress={() => Shadowsocks.switchProfile(profileID)}
+      />
+      <Button
         title={'Add Profile'}
         onPress={() => {
           const profile = new Profile(
@@ -62,8 +66,8 @@ export default function App() {
         onPress={() => Shadowsocks.clearProfiles()}
       />
       <Button
-        title={'Switch Profile'}
-        onPress={() => Shadowsocks.switchProfile(profileID)}
+        title={'List All Profiles'}
+        onPress={() => console.log(Shadowsocks.listAllProfile())}
       />
     </SafeAreaView>
   );

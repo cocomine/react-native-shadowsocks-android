@@ -150,6 +150,39 @@ function clearProfiles(): void {
   return ShadowsocksAndroid.clearProfiles();
 }
 
+/**
+ * Lists all Shadowsocks profiles.
+ *
+ * @returns {Profile[]} - An array of all Shadowsocks profiles.
+ */
+function listAllProfile(): Profile[] {
+  const profiles: ShadowsocksProfileType[] =
+    ShadowsocksAndroid.listAllProfile();
+
+  return profiles.map((profile) => {
+    const profileClass = new Profile(
+      profile.host,
+      profile.remotePort,
+      profile.password,
+      profile.method,
+      profile.route
+    );
+    profileClass.id = profile.id;
+    profileClass.name = profile.name;
+    profileClass.remoteDns = profile.remoteDns;
+    profileClass.proxyApps = profile.proxyApps;
+    profileClass.bypass = profile.bypass;
+    profileClass.udpdns = profile.udpdns;
+    profileClass.ipv6 = profile.ipv6;
+    profileClass.metered = profile.metered;
+    profileClass.individual = profile.individual;
+    profileClass.plugin = profile.plugin;
+    profileClass.plugin_opts = profile.plugin_opts;
+
+    return profileClass;
+  });
+}
+
 function connect(): void {
   return ShadowsocksAndroid.connect();
 }
@@ -170,6 +203,7 @@ export const Shadowsocks = {
   disconnect,
   switchProfile,
   importProfileUri,
+  listAllProfile,
 };
 
 export type { RouteType, ShadowsocksProfileType };
