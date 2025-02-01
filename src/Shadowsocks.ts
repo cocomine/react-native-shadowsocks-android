@@ -255,8 +255,36 @@ function disconnect(): void {
   return ShadowsocksAndroid.disconnect();
 }
 
-function switchProfile(profileId: number): number {
-  return ShadowsocksAndroid.switchProfile(profileId);
+/**
+ * Switches to a Shadowsocks profile by its ID.
+ * If the profile is not found, will auto create a new default profile and switch to it.
+ *
+ * @param {number} profileId - The ID of the profile to switch to.
+ * @returns {Profile} - The switched profile.
+ */
+function switchProfile(profileId: number): Profile {
+  const profile = ShadowsocksAndroid.switchProfile(profileId);
+
+  const profileClass = new Profile(
+    profile.host,
+    profile.remotePort,
+    profile.password,
+    profile.method,
+    profile.route
+  );
+  profileClass.id = profile.id;
+  profileClass.name = profile.name;
+  profileClass.remoteDns = profile.remoteDns;
+  profileClass.proxyApps = profile.proxyApps;
+  profileClass.bypass = profile.bypass;
+  profileClass.udpdns = profile.udpdns;
+  profileClass.ipv6 = profile.ipv6;
+  profileClass.metered = profile.metered;
+  profileClass.individual = profile.individual;
+  profileClass.plugin = profile.plugin;
+  profileClass.plugin_opts = profile.plugin_opts;
+
+  return profileClass;
 }
 
 export const Shadowsocks = {

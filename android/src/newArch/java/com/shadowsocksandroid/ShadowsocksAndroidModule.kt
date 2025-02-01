@@ -366,14 +366,48 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
   }
 
   /**
-   * Switches to a different profile by its ID.
+   * Switches to the specified profile by its ID and returns the profile details as a WritableMap.
+   * If the profile is not found, will auto create a new default profile and switch to it.
+   *
    * @param profileId The ID of the profile to switch to.
-   * @return The ID of the switched profile.
+   * @return A WritableMap containing the profile details.
    */
-  override fun switchProfile(profileId: Double): WritableMap? {
-    TODO("Not yet implemented")
+  override fun switchProfile(profileId: Double): WritableMap {
     Timber.tag(NAME).d("Switching to profile $profileId")
     val profile = Core.switchProfile(profileId.toLong())
+
+    val profileMap = WritableNativeMap()
+    profileMap.putDouble("id", profile.id.toDouble())
+    profileMap.putString("name", profile.name)
+    profileMap.putString("host", profile.host)
+    profileMap.putInt("remotePort", profile.remotePort)
+    profileMap.putString("password", profile.password)
+    profileMap.putString("method", profile.method)
+    profileMap.putString("route", profile.route)
+    profileMap.putString("remoteDns", profile.remoteDns)
+    profileMap.putBoolean("proxyApps", profile.proxyApps)
+    profileMap.putBoolean("bypass", profile.bypass)
+    profileMap.putBoolean("udpdns", profile.udpdns)
+    profileMap.putBoolean("ipv6", profile.ipv6)
+    profileMap.putBoolean("metered", profile.metered)
+    WritableNativeArray().also {
+      if (profile.individual.isNotEmpty()) {
+        profile.individual.split("\n").forEach { it2 -> it.pushString(it2) }
+      }
+      profileMap.putArray("individual", it)
+    }
+    PluginConfiguration(profile.plugin ?: "").getOptions().also {
+      if (it.id.isNotEmpty()) {
+        profileMap.putString("plugin", it.id)
+        profileMap.putString("plugin_opts", it.toString())
+      } else {
+        profileMap.putString("plugin", null)
+        profileMap.putString("plugin_opts", null)
+      }
+    }
+
+    Timber.tag(NAME).d("$profileMap")
+    return profileMap
   }
 
   companion object {

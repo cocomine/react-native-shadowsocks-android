@@ -22,7 +22,7 @@ export default function App() {
       <Button title={'Disconnect'} onPress={() => Shadowsocks.disconnect()} />
       <Button
         title={'Switch Profile'}
-        onPress={() => Shadowsocks.switchProfile(profileID)}
+        onPress={() => console.log(Shadowsocks.switchProfile(profileID))}
       />
       <Button
         title={'Add Profile'}
