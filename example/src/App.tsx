@@ -69,6 +69,10 @@ export default function App() {
         title={'List All Profiles'}
         onPress={() => console.log(Shadowsocks.listAllProfile())}
       />
+      <Button
+        title={'Get Profiles'}
+        onPress={() => console.log(Shadowsocks.getProfile(profileID))}
+      />
     </SafeAreaView>
   );
 }

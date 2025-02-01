@@ -183,6 +183,41 @@ function listAllProfile(): Profile[] {
   });
 }
 
+/**
+ * Retrieves a Shadowsocks profile by its ID.
+ *
+ * @param {number} profileId - The ID of the profile to retrieve.
+ * @returns {Profile | null} - The retrieved profile, or null if not found.
+ */
+function getProfile(profileId: number): Profile | null {
+  const profile = ShadowsocksAndroid.getProfile(profileId);
+
+  if (profile === null) {
+    return null;
+  }
+
+  const profileClass = new Profile(
+    profile.host,
+    profile.remotePort,
+    profile.password,
+    profile.method,
+    profile.route
+  );
+  profileClass.id = profile.id;
+  profileClass.name = profile.name;
+  profileClass.remoteDns = profile.remoteDns;
+  profileClass.proxyApps = profile.proxyApps;
+  profileClass.bypass = profile.bypass;
+  profileClass.udpdns = profile.udpdns;
+  profileClass.ipv6 = profile.ipv6;
+  profileClass.metered = profile.metered;
+  profileClass.individual = profile.individual;
+  profileClass.plugin = profile.plugin;
+  profileClass.plugin_opts = profile.plugin_opts;
+
+  return profileClass;
+}
+
 function connect(): void {
   return ShadowsocksAndroid.connect();
 }
@@ -204,6 +239,7 @@ export const Shadowsocks = {
   switchProfile,
   importProfileUri,
   listAllProfile,
+  getProfile,
 };
 
 export type { RouteType, ShadowsocksProfileType };
