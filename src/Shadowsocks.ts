@@ -218,6 +218,35 @@ function getProfile(profileId: number): Profile | null {
   return profileClass;
 }
 
+/**
+ * Updates a Shadowsocks profile.
+ *
+ * @param {Profile} profile - The profile to be updated.
+ * @returns {boolean} - Returns true if the profile was successfully updated, false otherwise.
+ */
+function updateProfile(profile: Profile): boolean {
+  const SSProfile: ShadowsocksProfileType = {
+    id: profile.id,
+    name: profile.name,
+    host: profile.host,
+    remotePort: profile.remotePort,
+    password: profile.password,
+    method: profile.method,
+    route: profile.route,
+    remoteDns: profile.remoteDns,
+    proxyApps: profile.proxyApps,
+    bypass: profile.bypass,
+    udpdns: profile.udpdns,
+    ipv6: profile.ipv6,
+    metered: profile.metered,
+    individual: profile.individual,
+    plugin: profile.plugin,
+    plugin_opts: profile.plugin_opts,
+  };
+
+  return ShadowsocksAndroid.updateProfile(SSProfile);
+}
+
 function connect(): void {
   return ShadowsocksAndroid.connect();
 }
@@ -240,6 +269,7 @@ export const Shadowsocks = {
   importProfileUri,
   listAllProfile,
   getProfile,
+  updateProfile,
 };
 
 export type { RouteType, ShadowsocksProfileType };

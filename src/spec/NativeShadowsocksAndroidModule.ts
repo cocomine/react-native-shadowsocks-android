@@ -50,6 +50,8 @@ export interface Spec extends TurboModule {
 
   getProfile(profileId: number): ShadowsocksProfileType | null;
 
+  updateProfile(profile: ShadowsocksProfileType): boolean;
+
   connect(): Promise<boolean>;
 
   disconnect(): void;

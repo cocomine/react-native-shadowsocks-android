@@ -73,6 +73,22 @@ export default function App() {
         title={'Get Profiles'}
         onPress={() => console.log(Shadowsocks.getProfile(profileID))}
       />
+      <Button
+        title={'Update Profile'}
+        onPress={() => {
+          const profile = new Profile(
+            'hk.vpn.cocomine.cc',
+            6373,
+            'i4tbxhk6uEk-LT$',
+            'xchacha20-ietf-poly1305'
+          );
+          profile.id = profileID;
+          profile.proxyApps = false;
+          profile.name = 'hk vpn(edit)';
+
+          console.log(Shadowsocks.updateProfile(profile));
+        }}
+      />
     </SafeAreaView>
   );
 }
