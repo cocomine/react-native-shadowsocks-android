@@ -345,7 +345,6 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
    */
   @ReactMethod
   fun connect(promise: Promise?) {
-    TODO("Not yet implemented")
     val activity = currentActivity
 
     // Check if the current activity is a ReactActivity

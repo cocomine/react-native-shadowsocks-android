@@ -33,13 +33,11 @@ export default function App() {
             'i4tbxhk6uEk-LT$',
             'xchacha20-ietf-poly1305'
           );
-          profile.proxyApps = true;
+          profile.proxyApps = false;
           profile.individual = [
             'com.eg.android.AlipayGphone',
             'com.wudaokou.hippo',
           ];
-          profile.plugin = 'v2ray';
-          profile.plugin_opts = 'host=www.example.com';
 
           const id = Shadowsocks.addProfile(profile);
           console.log(profile);

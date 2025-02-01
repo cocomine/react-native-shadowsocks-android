@@ -1,13 +1,27 @@
 package com.shadowsocksandroid
 
+import android.app.Application
+import android.content.Intent
 import com.facebook.react.TurboReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.module.model.ReactModuleInfo
 import com.facebook.react.module.model.ReactModuleInfoProvider
+import com.github.shadowsocks.Core
 
 
-class ShadowsocksAndroidPackage : TurboReactPackage() {
+class ShadowsocksAndroidPackage(private var application: Application) : TurboReactPackage() {
+
+  init {
+    // Initialize the Core component with the application context and TestActivity class
+    Core.init(application, TestActivity::class)
+
+    // Create an intent to start the InitService
+    val intent = Intent(application, InitService::class.java)
+
+    // Start the InitService
+    application.startService(intent)
+  }
 
   override fun getModule(name: String, reactContext: ReactApplicationContext): NativeModule? {
     return if (name == ShadowsocksAndroidModule.NAME) {

@@ -7,7 +7,6 @@ import com.facebook.react.bridge.BaseActivityEventListener
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
-import com.facebook.react.bridge.UiThreadUtil
 import com.facebook.react.bridge.WritableArray
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.WritableNativeArray
@@ -16,9 +15,6 @@ import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.github.shadowsocks.Core
 import com.github.shadowsocks.VpnRequestActivity
-import com.github.shadowsocks.aidl.IShadowsocksService
-import com.github.shadowsocks.aidl.ShadowsocksConnection
-import com.github.shadowsocks.bg.BaseService
 import com.github.shadowsocks.database.Profile
 import com.github.shadowsocks.database.ProfileManager
 import com.github.shadowsocks.plugin.PluginConfiguration
@@ -28,7 +24,7 @@ import timber.log.Timber
 
 @ReactModule(name = ShadowsocksAndroidModule.NAME)
 class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
-  NativeShadowsocksAndroidModuleSpec(reactContext), ShadowsocksConnection.Callback {
+  NativeShadowsocksAndroidModuleSpec(reactContext) {
 
   init {
     reactContext.addActivityEventListener(ActivityEventListener())
@@ -334,11 +330,7 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
     return false
   }
 
-  /**
-   * Connects to the service.
-   */
   override fun connect(promise: Promise?) {
-    TODO("Not yet implemented")
     val activity = currentActivity
 
     // Check if the current activity is a ReactActivity
@@ -348,19 +340,15 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
       return
     }
 
-    UiThreadUtil.runOnUiThread {
-      val intent = Intent(activity, VpnRequestActivity::class.java)
-      activity.startActivityForResult(intent, Activity.RESULT_OK)
-      promise?.resolve(true)
-    };
+    val intent2 = Intent(activity, VpnRequestActivity::class.java)
+    activity.startActivityForResult(intent2, Activity.RESULT_OK)
+
+    promise?.resolve(true)
+
     Timber.tag(NAME).d("Connect to service")
   }
 
-  /**
-   * Disconnects from the service.
-   */
   override fun disconnect() {
-    TODO("Not yet implemented")
     Core.stopService()
     Timber.tag(NAME).d("Disconnect from service")
   }
@@ -412,13 +400,5 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
 
   companion object {
     const val NAME = "ShadowsocksAndroid"
-  }
-
-  override fun stateChanged(state: BaseService.State, profileName: String?, msg: String?) {
-    TODO("Not yet implemented")
-  }
-
-  override fun onServiceConnected(service: IShadowsocksService) {
-    TODO("Not yet implemented")
   }
 }
