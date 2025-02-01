@@ -164,9 +164,54 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
     return ProfileManager.createProfile(profile).id.toDouble();
   }
 
+  /**
+   * Lists all profiles and returns them as a WritableArray.
+   *
+   * @return A WritableArray containing all profiles.
+   */
   @ReactMethod(isBlockingSynchronousMethod = true)
   fun listAllProfile(): WritableArray {
-    TODO("Not yet implemented")
+    val profiles = ProfileManager.getAllProfiles()
+    val profilesArray = WritableNativeArray()
+
+    if (profiles != null) {
+      for (profile in profiles) {
+        val profileMap = WritableNativeMap()
+        profileMap.putDouble("id", profile.id.toDouble())
+        profileMap.putString("name", profile.name)
+        profileMap.putString("host", profile.host)
+        profileMap.putInt("remotePort", profile.remotePort)
+        profileMap.putString("password", profile.password)
+        profileMap.putString("method", profile.method)
+        profileMap.putString("route", profile.route)
+        profileMap.putString("remoteDns", profile.remoteDns)
+        profileMap.putBoolean("proxyApps", profile.proxyApps)
+        profileMap.putBoolean("bypass", profile.bypass)
+        profileMap.putBoolean("udpdns", profile.udpdns)
+        profileMap.putBoolean("ipv6", profile.ipv6)
+        profileMap.putBoolean("metered", profile.metered)
+        WritableNativeArray().also {
+          if (profile.individual.isNotEmpty()) {
+            profile.individual.split("\n").forEach { it2 -> it.pushString(it2) }
+          }
+          profileMap.putArray("individual", it)
+        }
+        PluginConfiguration(profile.plugin ?: "").getOptions().also {
+          if (it.id.isNotEmpty()) {
+            profileMap.putString("plugin", it.id)
+            profileMap.putString("plugin_opts", it.toString())
+          } else {
+            profileMap.putString("plugin", null)
+            profileMap.putString("plugin_opts", null)
+          }
+        }
+
+        profilesArray.pushMap(profileMap)
+      }
+    }
+
+    Timber.tag(NAME).d("$profilesArray")
+    return profilesArray
   }
 
   /**
