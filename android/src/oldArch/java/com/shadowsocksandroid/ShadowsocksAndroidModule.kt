@@ -293,6 +293,54 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) :
   }
 
   /**
+   * Updates a profile with the given details.
+   *
+   * @param profile The ReadableMap containing the profile details to update.
+   * @return `true` if the profile was successfully updated, `false` otherwise.
+   */
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  fun updateProfile(profile: ReadableMap?): Boolean {
+    val profileId = profile?.getDouble("id") ?: return false
+    val profileObj = ProfileManager.getProfile(profileId.toLong()) ?: return false
+
+    with(profileObj) {
+      name = profile.getString("name") ?: name
+      host = profile.getString("host") ?: host
+      remotePort = profile.getInt("remotePort")
+      password = profile.getString("password") ?: password
+      method = profile.getString("method") ?: method
+
+      route = profile.getString("route") ?: route
+      remoteDns = profile.getString("remoteDns") ?: remoteDns
+      proxyApps = profile.getBoolean("proxyApps")
+      bypass = profile.getBoolean("bypass")
+      udpdns = profile.getBoolean("udpdns")
+      ipv6 = profile.getBoolean("ipv6")
+
+      metered = profile.getBoolean("metered")
+      val proxyAppsList = profile.getArray("individual")?.toArrayList()?.map { it.toString() } ?: emptyList()
+      individual = proxyAppsList.joinToString("\n")
+
+      val pluginId = profile.getString("plugin")
+      if (!pluginId.isNullOrEmpty()) {
+        plugin = PluginOptions(pluginId, profile.getString("plugin_opts")).toString(false)
+      }
+    }
+
+    try {
+      // Attempt to update the profile using the ProfileManager
+      ProfileManager.updateProfile(profileObj)
+      Timber.tag(NAME).i("Updated profile $profileObj")
+      return true
+    } catch (e: IllegalStateException) {
+      // Log the exception if update fails
+      Timber.tag(NAME).e(e)
+      Timber.tag(NAME).i("Update failed for profile $profileObj")
+    }
+    return false
+  }
+
+  /**
    * Connects to the service.
    */
   @ReactMethod
