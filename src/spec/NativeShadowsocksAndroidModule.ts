@@ -52,7 +52,7 @@ export interface Spec extends TurboModule {
 
   updateProfile(profile: ShadowsocksProfileType): boolean;
 
-  connect(): Promise<boolean>;
+  connect(): Promise<number>;
 
   disconnect(): void;
 

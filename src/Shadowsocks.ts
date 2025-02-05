@@ -247,7 +247,7 @@ function updateProfile(profile: Profile): boolean {
   return ShadowsocksAndroid.updateProfile(SSProfile);
 }
 
-function connect(): void {
+function connect(): Promise<number> {
   return ShadowsocksAndroid.connect();
 }
 

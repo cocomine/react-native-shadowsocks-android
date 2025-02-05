@@ -4,5 +4,11 @@
       android:name=".InitService"
       android:process=":bg"
       android:exported="false"/>
+
+    <activity
+      android:name="com.shadowsocksandroid.VpnRequestActivity"
+      android:exported="false"
+      android:excludeFromRecents="true"
+      android:taskAffinity=""/>
   </application>
 </manifest>

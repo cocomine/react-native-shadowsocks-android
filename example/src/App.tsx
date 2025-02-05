@@ -18,7 +18,10 @@ export default function App() {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <Button title={'Connect'} onPress={() => Shadowsocks.connect()} />
+      <Button
+        title={'Connect'}
+        onPress={() => Shadowsocks.connect().then((a) => console.log(a))}
+      />
       <Button title={'Disconnect'} onPress={() => Shadowsocks.disconnect()} />
       <Button
         title={'Switch Profile'}
