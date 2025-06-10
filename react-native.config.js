@@ -2,12 +2,13 @@
  * @type {import('@react-native-community/cli-types').UserDependencyConfig}
  */
 module.exports = {
-  dependency: {
-    platforms: {
-      android: {
-        cmakeListsPath: 'generated/jni/CMakeLists.txt',
-        packageInstance: 'new ShadowsocksAndroidPackage(application)',
-      },
+    dependency: {
+        platforms: {
+            android: {
+                cmakeListsPath: 'generated/jni/CMakeLists.txt',
+                packageInstance:
+                    'new ShadowsocksAndroidPackage(getApplication())',
+            },
+        },
     },
-  },
 };
