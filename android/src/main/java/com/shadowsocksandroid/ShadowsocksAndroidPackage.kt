@@ -2,6 +2,7 @@ package com.shadowsocksandroid
 
 import android.app.Application
 import android.content.Intent
+import com.facebook.react.BaseReactPackage
 import com.facebook.react.TurboReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
@@ -10,7 +11,7 @@ import com.facebook.react.module.model.ReactModuleInfoProvider
 import com.github.shadowsocks.Core
 
 
-class ShadowsocksAndroidPackage(private var application: Application) : TurboReactPackage() {
+class ShadowsocksAndroidPackage(private var application: Application) : BaseReactPackage() {
 
     init {
         // Initialize the Core component with the application context and TestActivity class
