@@ -1,6 +1,7 @@
 buildscript {
   // Buildscript is evaluated before everything else so we can't use getExtOrDefault
   def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : project.properties["ShadowsocksAndroid_kotlinVersion"]
+  def gradle_version = rootProject.ext.has("gradleVersion") ? rootProject.ext.get("gradleVersion") : project.properties["ShadowsocksAndroid_gradleVersion"]
 
   repositories {
     google()
@@ -8,7 +9,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "com.android.tools.build:gradle:7.2.1"
+    classpath "com.android.tools.build:gradle:$gradle_version"
     // noinspection DifferentKotlinGradleVersion
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
