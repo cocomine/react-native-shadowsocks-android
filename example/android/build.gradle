@@ -12,7 +12,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle") //todo: Make sure react native 0.77.2 above
+        classpath("com.android.tools.build:gradle:8.10.0") //todo: Make sure AGP 8.10.0
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
 
