@@ -82,8 +82,8 @@ android {
   }
 
   compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
+    sourceCompatibility JavaVersion.VERSION_11
+    targetCompatibility JavaVersion.VERSION_11
   }
 
   sourceSets.main {
@@ -106,7 +106,7 @@ repositories {
   google()
 }
 
-apply from: "setup-module.gradle"
+//apply from: "setup-module.gradle"
 
 def kotlin_version = getExtOrDefault("kotlinVersion")
 

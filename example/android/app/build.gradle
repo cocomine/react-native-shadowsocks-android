@@ -116,7 +116,7 @@ dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
-  implementation "com.github.shadowsocks:core:5.3.4" //todo: Add the shadowsocks core library dependency
+  //implementation "com.github.shadowsocks:core:5.3.4" //todo: Add the shadowsocks core library dependency
 
   if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
