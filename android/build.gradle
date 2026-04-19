@@ -118,7 +118,7 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   // Add the shadowsocks core library dependency
-  implementation "com.github.shadowsocks:core:5.3.4"
+  implementation "com.github.shadowsocks:core:5.3.5"
 }
 
 if (isNewArchitectureEnabled()) {
