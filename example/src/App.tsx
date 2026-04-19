@@ -32,9 +32,9 @@ export default function App() {
                     title={'Add Profile'}
                     onPress={() => {
                         const profile = new Profile(
-                            'us2.vpn.cocomine.cc',
+                            'us.vpn.cocomine.cc',
                             6381,
-                            'iLBKsPYgjCZgBZsTO6WsAVpb7/zwa5n0FWelWv+tNNY=',
+                            'BhcW64mXV84TeZW+E5UgAFB/DbGAcx1x2Ljm4CS8iYI=',
                             'aes-256-gcm'
                         );
                         profile.remoteDns = '1.1.1.1';

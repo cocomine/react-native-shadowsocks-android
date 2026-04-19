@@ -1,4 +1,4 @@
-package com.test
+package shadowsocksandroid.example
 
 import android.app.Application
 import com.facebook.react.PackageList

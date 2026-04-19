@@ -5,6 +5,7 @@ shadowsocks-android react-native compatible version
 ## Pre-requisites
 - react-native >= 0.77.2
 - rust: see [shadowssocks-android/README.md ](/hadowssocks-android/README.md)for more details
+- python: >= 3.0.0
 
 ## Installation
 
