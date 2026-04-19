@@ -26,7 +26,7 @@ export default function App() {
                 />
                 <Button
                     title={'Switch Profile'}
-                    onPress={() => console.log(Shadowsocks.switchProfile(3))}
+                    onPress={() => console.log(Shadowsocks.switchProfile(1))}
                 />
                 <Button
                     title={'Add Profile'}
