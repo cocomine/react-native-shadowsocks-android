@@ -134,7 +134,7 @@ class ShadowsocksAndroidModule(reactContext: ReactApplicationContext) : Shadowso
             method = shadowsocksProfile?.getString("method") ?: "aes-256-cfb"
 
             route = shadowsocksProfile?.getString("route") ?: "all"
-            remoteDns = shadowsocksProfile?.getString("remoteDns") ?: "dns.google"
+            remoteDns = shadowsocksProfile?.getString("remoteDns") ?: "1.1.1.1"
             proxyApps = shadowsocksProfile?.getBoolean("proxyApps") ?: false
             bypass = shadowsocksProfile?.getBoolean("bypass") ?: false
             udpdns = shadowsocksProfile?.getBoolean("udpdns") ?: false
